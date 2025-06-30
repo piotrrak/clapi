@@ -35,6 +35,7 @@ static_assert(requires {
   check_fn(nontype<::clGetPlatformIDs>);
 });
 
+#include <cassert>
 #include <concepts>
 #include <coroutine>
 #include <ranges>
@@ -127,7 +128,7 @@ using full_device_id_t = std::tuple<::cl_platform_id,
                                     ::cl_device_id,
                                     ::cl_device_type>;
 
-// Since we have few overloads we make it callable object.
+// Since thare are multiple templated overloads we make it callable object.
 // This allows us to bind such object, what otherwise wouldn't be possible.
 //
 // Otherwise one would need to to cast it or wrap it in lambda function.
@@ -194,7 +195,8 @@ struct enum_platform_devices_fn
       }
       else
       {
-        // No need to query CL_DEVICE_TYPE
+        assert(device_type != CL_DEVICE_TYPE_ALL);
+        // There's no need to query CL_DEVICE_TYPE
         auto pdevs = zip(repeat(pid), devs, repeat(device_type));
 
 #if _clapi_MISSING_RANGES_CONCAT
@@ -401,7 +403,6 @@ static constexpr auto string_any = []
   (std::any &&a)
   static { return std::any_cast<std::string>(a); };
 
-#include <cassert>
 #include <print>
 
 using namespace std::literals::string_view_literals;
@@ -504,6 +505,7 @@ int main(int argc,
     auto remembered = discovered_dev | rng::to<vector>();
     auto available = remembered | filter(if_avail) | rng::to<vector>();
 
+    // By the default select devices supporting full OpenCL 3.0 profile.
     if (not has_switch("--want-legacy"))
     {
       available = all(std::move(available))
@@ -511,7 +513,8 @@ int main(int argc,
                   | rng::to<vector>();
     }
 
-    // Print discorvered all devices
+    // Print all discorvered devices.
+    std::println("The OpenCL discovered devices (per-platform) are:");
     for (auto dev : remembered)
     {
       auto [p, d, t] = dev;
@@ -539,9 +542,17 @@ int main(int argc,
   auto cpu_devs = std::bind(enum_platform_devices, plat_ref, CL_DEVICE_TYPE_CPU);
   auto all_devs = std::bind(enum_platform_devices, plat_ref, CL_DEVICE_TYPE_ALL);
 
+  // Mutualy-exclusive switches `cmdline::excl_group_dev_type`
+  //   See: `cmd_arg_parse.hh`
   if (has_switch("--all-types"sv)) select_devices(all_devs());
   else if (has_switch("--cpu-only"sv)) select_devices(cpu_devs());
   else if (has_switch("--gpu-only"sv)) select_devices(gpu_devs());
+
+  // We do nothing with selection, but we did select them...
+  // Those are to are likeing.
+  // We really have them!
+  // We're happy now and feeling acomplished.
+  // Aren't we?
 }
 catch (clapi::error_code_t e)
 {
