@@ -13,6 +13,8 @@ template <int = 0> struct empty;
 
 namespace clapi::detail::inline etc
 {
+//
+//
 template <bool Cond_, typename Ty_, typename = void>
 constexpr inline auto _cond = itstype_t<Ty_>{};
 

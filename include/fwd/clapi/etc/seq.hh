@@ -3,6 +3,11 @@
 #include "fwd/clapi/etc/basic.hh"
 #include "fwd/clapi/etc/type_constants.hh"
 
+  // TODO: reconsider/check if providing forward includes is of any real value.
+  // The modules based compilation, might be some lead.
+#include <concepts> // won't get away without that, since we really want constain template
+                    // declarations.
+
 namespace clapi::inline sequences
 {
 
@@ -86,9 +91,31 @@ concept type_sequence = is_some_tseq<Type_>();
 //----------------------------------------------------------------------------------------
 // value_sequence
 //----------------------------------------------------------------------------------------
-
 template <typename Type_>
 concept value_sequence = is_some_vseq<Type_>();
+
+
+//----------------------------------------------------------------------------------------
+// indexable_sequence -
+//----------------------------------------------------------------------------------------
+//
+// TODO: finish, seems we'll need non-empty-sequence<> and size_sequence from header
+// When at it, it should probably be good to allow ADL injection of size and empty checks
+// (by the free functions) and also hook it up with std::tuple_size std::get machinery of
+// standard library.
+//
+// That would allow using seq's with structure bindings, which can introduce a pack since
+// c++26. Could be still useful in the c++23 dialect - if fixedn umber of elements in the
+// sequence is expected.
+template <typename Type_>
+concept indexable_sequence = requires {
+  { Type_::size      } -> std::convertible_to<std::size_t>;
+  { Type_::size()    } noexcept -> std::convertible_to<std::size_t>;
+  { Type_::empty     } -> std::convertible_to<bool>;
+  { Type_::empty()   } noexcept -> std::convertible_to<bool>;
+  { !Type_::empty    } -> std::convertible_to<bool>;
+  { !Type_::empty()  } noexcept -> std::convertible_to<bool>;
+};
 
 } // clapi::inline sequences::inline concepts
 

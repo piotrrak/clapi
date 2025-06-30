@@ -224,6 +224,12 @@ public:
 
 } // namespace clapi::inline etc
 
+// Prepare for clapi::detail rename to clapi::_detail
+namespace clapi
+{
+namespace _detail = detail;
+}
+
 /* Best read in VIM {{{
  * vim: noai : et : fdm=marker :
  * }}} */

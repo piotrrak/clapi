@@ -9,14 +9,21 @@ namespace clapi::detail::inline sequences
 {
 
 //----------------------------------------------------------------------------------------
-// _sized_seq - base class for sequences
+// _sized_seq - provides seq-like types with the basic size-related members
 //----------------------------------------------------------------------------------------
+//
+//  Note: Provides the utilities for meeting requirements of the `indexable_sequence`. {{{
+//        The `_sized_seq` base class doesn't provide the access to elements since
+//        seq-like types are bit heavier abstraction over the template parameter-packs of
+//        the both types and nontypes.
+
 template <std::size_t Size_>
 struct _sized_seq
 {
   static constexpr inline auto size = size_<Size_>;
   static constexpr inline auto empty = boolean_<Size_ == 0>;
 
+  // the index range check - constainted to `unsigned_integral`
   template <typename IndexedTy_ = unsigned>
   static consteval auto in_range(unsigned_integral auto idx) noexcept -> bool
   {
@@ -72,13 +79,13 @@ constexpr empty<> _size_v{};
 
 template <typename Ty_>
   requires requires { {_size_v_impl<Ty_>}; }
-constexpr size_t _size_v<Ty_> = _size_v_impl<Ty_>;
+constexpr std::size_t _size_v<Ty_> = _size_v_impl<Ty_>;
 
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 
 template <std::size_t... Idxs_>
-constexpr size_t _size_v<iseq<Idxs_...>> = sizeof...(Idxs_);
+constexpr std::size_t _size_v<iseq<Idxs_...>> = sizeof...(Idxs_);
 
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
