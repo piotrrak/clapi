@@ -1,0 +1,2 @@
+option('enable-qa-hdrs-sanity', type: 'boolean', value: false,
+       description: 'Build time check ensuring that all headers can be included w/o dependencies')

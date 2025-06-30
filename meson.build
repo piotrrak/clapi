@@ -21,7 +21,7 @@ has_ranges_concat = cxx.compiles(
 auto check_concat()
 {
    std::vector<char> ABC {'A', 'B', 'C'};
-   std::string XYZ;
+   std::string XYZ{"XYZ"};
 
    return ::std::ranges::views::concat(ABC, XYZ);
 }
@@ -38,12 +38,15 @@ endif
 srcs = [
   'cmd_line_parse.cc',
   'clapi.cc',
+# TODO: build seperatly
 # static_asserts()
   'qa'/'deduced_asserts.cc',
   'qa'/'fun_ptr_asserts.cc'
 ]
 
+clapi_private_inc_path = meson.project_source_root()/'private_include'
 clapi_private_inc = include_directories('private_include')
+clapi_inc_path = meson.project_source_root()/'include'
 clapi_inc = include_directories('include')
 
 clapi = executable('clapi',
@@ -52,4 +55,5 @@ clapi = executable('clapi',
                     include_directories: [clapi_private_inc, clapi_inc],
                     dependencies: deps)
 
+subdir('qa')
 
