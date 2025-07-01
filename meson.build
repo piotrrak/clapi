@@ -5,8 +5,10 @@ cl_dep = dependency('OpenCL')
 
 deps = [cl_dep]
 
-message('Building in:' + get_option('cpp_std') + ' mode')
+message('Building in: ' + get_option('cpp_std') + ' mode')
 
+# FIXME someday : MSVC won't will fail here refusing to admit those options.
+# As of now there is no public version supporting pack-indexing anyway.
 assert(get_option('cpp_std') in ['c++23', 'c++26'])
 
 cxx = meson.get_compiler('cpp')
@@ -45,9 +47,10 @@ srcs = [
 ]
 
 clapi_private_inc_path = meson.project_source_root()/'private_include'
-clapi_private_inc = include_directories('private_include')
+clapi_private_inc = include_directories(clapi_private_inc_path)
+
 clapi_inc_path = meson.project_source_root()/'include'
-clapi_inc = include_directories('include')
+clapi_inc = include_directories(clapi_inc_path)
 
 clapi = executable('clapi',
                     srcs,
@@ -56,4 +59,3 @@ clapi = executable('clapi',
                     dependencies: deps)
 
 subdir('qa')
-

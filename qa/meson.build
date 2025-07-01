@@ -14,7 +14,7 @@ foreach mod : ['fwd'/'clapi',
                'clapi'/'deduced',
                'clapi'/'transforms',
                'clapi']
-  r = run_command(prog_find, [clapi_inc/mod,
+  r = run_command(prog_find, [clapi_inc_path/mod,
                               '-iname', '*.hh',
                               '-maxdepth', '1',
                               '-type', 'f'],
@@ -27,7 +27,7 @@ foreach mod : ['fwd'/'clapi',
                          check: false,
                          capture: false)
     if 0 == in_git.returncode()
-      hdr_path = fs.relative_to(p, path)
+      hdr_path = fs.relative_to(p, clapi_inc_path)
       src_path = fs.replace_suffix(hdr_path, '.cc')
       debug(f'For header: @hdr_path@')
       chk_path = 'headers-work'/src_path
