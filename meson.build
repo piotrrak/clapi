@@ -47,10 +47,10 @@ srcs = [
 ]
 
 clapi_private_inc_path = meson.project_source_root()/'private_include'
-clapi_private_inc = include_directories(clapi_private_inc_path)
+clapi_private_inc = include_directories('private_include')
 
 clapi_inc_path = meson.project_source_root()/'include'
-clapi_inc = include_directories(clapi_inc_path)
+clapi_inc = include_directories('include')
 
 clapi = executable('clapi',
                     srcs,
