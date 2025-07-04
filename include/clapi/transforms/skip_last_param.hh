@@ -2,7 +2,7 @@
 
 #include "clapi/etc/seq.hh"
 
-namespace clapi::detail::transforms
+namespace clapi::_detail::transforms
 {
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ struct _skip_last_param<tseq<AtLeastOne_, Types_...>> :
   tseq_gather<iseq_for<Types_...>, AtLeastOne_, Types_...>
 {
 };
-} // namespace clapi::detail::transforms
+} // namespace clapi::_detail::transforms
 
 namespace clapi::transforms
 {
@@ -26,7 +26,7 @@ namespace clapi::transforms
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 template <type_sequence TSeq_>
-using skip_last_param = typename detail::transforms::_skip_last_param<TSeq_>::type;
+using skip_last_param = typename _detail::transforms::_skip_last_param<TSeq_>::type;
 
 } // namespace clapi::transforms
 

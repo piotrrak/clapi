@@ -16,7 +16,7 @@
                     // declarations.
 #include <type_traits>
 
-namespace clapi::detail
+namespace clapi::_detail
 {
 
 // E. Niebler's? std::declval<T>() implementation by overload resolution
@@ -38,13 +38,7 @@ constexpr decltype(_declval<T_>(0)) _unprotected_declval() noexcept
   return _declval<T_>(0);
 }
 
-} // namespace clapi::detail
-
-// Prepare for clapi::detail rename to clapi::_detail
-namespace clapi
-{
-namespace _detail = detail;
-}
+} // namespace clapi::_detail
 
 namespace clapi::inline etc
 {
@@ -86,7 +80,7 @@ constexpr inline Ty_* nullptr_v = nullptr;
 
 } // namespace clapi::inline etc
 
-namespace clapi::detail::inline etc
+namespace clapi::_detail::inline etc
 {
 //
 //
@@ -100,7 +94,7 @@ constexpr inline auto _cond<Cond_, If_, Else_> = itstype_t<Else_>{};
 template <bool Cond_, typename If_, typename Else_>
 using _cond_t = typename decltype(_cond<Cond_, If_, Else_>)::type;
 
-} // namespace clapi::detail::inline etc
+} // namespace clapi::_detail::inline etc
 
 namespace clapi::inline etc
 {

@@ -3,7 +3,7 @@
 #include "fwd/clapi/etc/basic.hh"
 #include "fwd/clapi/etc/type_constants.hh"
 
-namespace clapi::detail::inline sequences
+namespace clapi::_detail::inline sequences
 {
 
 //----------------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ consteval bool _chk_pinterconv_sized_seq_base(add_cv_t<void>*)
 template <typename Ty_>
 concept _derived_from_sized_seq = _chk_pinterconv_sized_seq_base<Ty_>(nullptr_v<Ty_>);
 
-} // namespace clapi::detail::inline sequences
+} // namespace clapi::_detail::inline sequences
 
 namespace clapi::inline sequences
 {

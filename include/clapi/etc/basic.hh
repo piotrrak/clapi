@@ -47,7 +47,7 @@ struct empty {};
 
 } // namespace clapi::inline etc
 
-namespace clapi::detail::inline etc::_fptr_traits
+namespace clapi::_detail::inline etc::_fptr_traits
 {
 
 // Below is std::is_function_v conforming implementation.
@@ -122,7 +122,7 @@ template <auto Value_>
 constexpr inline auto _is_function_ptr_type<nontype_t<Value_>> =
   _is_function_ptr<Value_>;
 
-} // namespace clapi::detail::inline etc
+} // namespace clapi::_detail::inline etc
 
 namespace clapi::inline etc::inline concepts
 {
@@ -132,7 +132,7 @@ namespace clapi::inline etc::inline concepts
 // true iff type Ty_ is function pointer or nontype_t of thereof.
 template <typename Ty_>
 concept function_pointer_type =
-  detail::_fptr_traits::_is_function_ptr_type<Ty_>();
+  _detail::_fptr_traits::_is_function_ptr_type<Ty_>();
 
 // plain_function_pointer_type
 //
@@ -150,7 +150,7 @@ concept nontype_function_pointer_type = function_pointer_type<Ty_>
   and not plain_function_pointer_type<Ty_>;
 
 template <auto Value_>
-concept function_pointer = detail::_fptr_traits::_is_function_ptr<Value_>();
+concept function_pointer = _detail::_fptr_traits::_is_function_ptr<Value_>();
 
 template <auto Value_>
 concept plain_function_pointer = std::is_pointer_v<decltype(Value_)>

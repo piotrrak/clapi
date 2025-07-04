@@ -9,7 +9,7 @@
 #include "clapi/api_error.hh"
 #include "clapi/diagnostics.hh"
 
-namespace clapi::detail::transforms
+namespace clapi::_detail::transforms
 {
 
 //----------------------------------------------------------------------------------------
@@ -198,7 +198,7 @@ template <auto Fn_>
 using _checking_base = typename
   std::invoke_result_t<decltype(_select_err_handling<Fn_>)>;
 
-} // namespace clapi::detail::transforms
+} // namespace clapi::_detail::transforms
 
 namespace clapi::transforms
 {
@@ -208,7 +208,7 @@ namespace clapi::transforms
 
 template <auto Fn_>
   requires plain_function_pointer<Fn_> and deduced::core_api<nontype_t<Fn_>>
-struct check_fn : detail::transforms::_checking_base<Fn_>::type
+struct check_fn : _detail::transforms::_checking_base<Fn_>::type
 {
   constexpr check_fn() = default;
   constexpr check_fn(nontype_t<Fn_>) noexcept : check_fn() {}

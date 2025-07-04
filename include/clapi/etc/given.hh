@@ -9,7 +9,7 @@
 
 //----------------------------------------------------------------------------------------
 
-namespace clapi::detail::inline etc
+namespace clapi::_detail::inline etc
 {
 
 //----------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ template <bool Cond_, typename FnTy_>
 concept _unless_cond_noexcept_invocable =
   (not Cond_ and std::is_nothrow_invocable_r_v<void, FnTy_>) or Cond_;
 
-} // namespace clapi::detail::inline etc
+} // namespace clapi::_detail::inline etc
 
 namespace clapi::inline etc::inline causality
 {
@@ -126,9 +126,9 @@ struct given_t
   { return destiny == consequence; }
 
   static constexpr auto then(std::invocable auto &&choice)
-    noexcept(detail::_cond_noexcept_invocable<consequential_fate,
-                                              decltype(choice)>) -> given_t
-    requires detail::_cond_invocable<consequential_fate, decltype(choice)>
+    noexcept(_detail::_cond_noexcept_invocable<consequential_fate,
+                                               decltype(choice)>) -> given_t
+    requires _detail::_cond_invocable<consequential_fate, decltype(choice)>
   {
      if constexpr (consequential_fate)
        std::invoke_r<void>(std::forward<decltype(choice)>(choice));
@@ -137,9 +137,9 @@ struct given_t
   }
 
   constexpr auto or_else(std::invocable auto &&choice)
-    noexcept(detail::_cond_noexcept_invocable<repercussional_fate,
-                                                     decltype(choice)>) -> given_t
-    requires detail::_cond_invocable<repercussional_fate, decltype(choice)>
+    noexcept(_detail::_cond_noexcept_invocable<repercussional_fate,
+                                               decltype(choice)>) -> given_t
+    requires _detail::_cond_invocable<repercussional_fate, decltype(choice)>
   {
     if constexpr (destiny == repercussion)
       std::invoke_r<void>(std::forward<decltype(choice)>(choice));

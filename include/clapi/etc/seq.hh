@@ -5,7 +5,7 @@
 #include "clapi/etc/basic.hh"
 #include "clapi/etc/compiler.hh"
 
-namespace clapi::detail::inline sequences
+namespace clapi::_detail::inline sequences
 {
 
 //----------------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ consteval bool _chk_pinterconv_sized_seq_base(add_cv_t<_sized_seq<N_>>*)
   return std::is_pointer_interconvertible_base_of_v<_sized_seq<N_>, Ty_>;
 }
 
-} // namespace clapi::detail::inline sequences
+} // namespace clapi::_detail::inline sequences
 
 namespace clapi::inline sequences::inline concepts
 {
@@ -196,7 +196,7 @@ struct tseq : _detail::_sized_seq<sizeof...(Types_)>
 //----------------------------------------------------------------------------------------
 
 template <auto... Values_>
-struct vseq : detail::_sized_seq<sizeof...(Values_)>
+struct vseq : _detail::_sized_seq<sizeof...(Values_)>
 {
   template <unsigned Idx_>
     requires (vseq::in_range(Idx_))
@@ -230,7 +230,7 @@ struct vseq : detail::_sized_seq<sizeof...(Values_)>
 
 template <std::size_t Idx_,
           typename Seq_>
-  requires detail::_derived_from_sized_seq<Seq_>
+  requires _detail::_derived_from_sized_seq<Seq_>
 consteval auto get(Seq_) noexcept -> decltype(Seq_::template get_v<Idx_>)
 {
   return Seq_::template get_v<Idx_>;
@@ -301,7 +301,7 @@ _clapi_END_ALLOW_CPP26()
 } // namespace clapi::inline sequences
 
 // Asserts: {{{
-namespace clapi::detail::inline sequences
+namespace clapi::_detail::inline sequences
 {
 
 static_assert(not _derived_from_sized_seq<_sized_seq<0>>);

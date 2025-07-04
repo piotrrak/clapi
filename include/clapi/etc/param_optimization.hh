@@ -4,7 +4,7 @@
 
 #include <functional>
 
-namespace clapi::detail::inline etc
+namespace clapi::_detail::inline etc
 {
 
 template <typename Ty_, unsigned FitsNWords_>
@@ -36,7 +36,7 @@ consteval auto _param_trail() noexcept
     return add_rvalue_reference<Ty_>{};
 }
 
-} // namespace clapi::detail::inline etc
+} // namespace clapi::_detail::inline etc
 
 namespace clapi::inline etc
 {
@@ -44,7 +44,7 @@ namespace clapi::inline etc
 template <typename Ty_, unsigned WordsSzThresh = 1>
 using param_opt_t =
   typename std::invoke_result_t<
-    decltype(detail::etc::_param_trail<Ty_, WordsSzThresh>)>::type;
+    decltype(_detail::etc::_param_trail<Ty_, WordsSzThresh>)>::type;
 
 template <typename Ty_, unsigned WordsSzThresh = 1>
 [[nodiscard]]
