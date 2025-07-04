@@ -12,10 +12,12 @@
 namespace clapi::_detail::transforms
 {
 
+using namespace clapi::deduced;
+
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 template <auto Fn_, typename... Params_>
-  requires plain_function_pointer<Fn_>
+  requires deduced::plain_function_pointer<Fn_>
 struct _returning_value_api
 {
   using api_fn_t = nontype_t<Fn_>;
@@ -23,7 +25,7 @@ struct _returning_value_api
   template <typename... OtherParams_>
   using rebind_t = _returning_value_api<Fn_, OtherParams_...>;
 
-  using return_type = deduced::result_of<Fn_>;
+  using return_type = result_of<Fn_>;
   using tracking_t = sloc_tracking<>;
 
   static constexpr inline auto API = api_fn_t{};
@@ -174,9 +176,9 @@ consteval auto _select_err_handling()
     return itstype<base>;
   };
 
-  constexpr bool isOutErr = deduced::is_outerr_clapi_v<API_t_>;
+  constexpr bool isOutErr = is_outerr_clapi_v<API_t_>;
 
-  using params_t = deduced::params_of<Fn_>;
+  using params_t = params_of<Fn_>;
   constexpr tseq params = params_t{};
 
   if constexpr (not isOutErr)
@@ -207,7 +209,7 @@ namespace clapi::transforms
 //----------------------------------------------------------------------------------------
 
 template <auto Fn_>
-  requires plain_function_pointer<Fn_> and deduced::core_api<nontype_t<Fn_>>
+  requires deduced::plain_function_pointer<Fn_> and deduced::core_api<nontype_t<Fn_>>
 struct check_fn : _detail::transforms::_checking_base<Fn_>::type
 {
   constexpr check_fn() = default;

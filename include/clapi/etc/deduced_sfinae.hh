@@ -1,8 +1,9 @@
 #pragma once
 
 #include "clapi/etc/basic.hh"
+#include "clapi/deduced/function_pointer.hh"
 
-namespace clapi::inline etc::inline concepts
+namespace clapi::deduced::inline concepts
 {
 
 //----------------------------------------------------------------------------------------
@@ -14,7 +15,7 @@ concept can_deduce_with = function_pointer<Fn_> and requires {
   typename Deduce_t_<Fn_>;
 };
 
-} // namespace clapi::inline etc::inline concepts
+} // namespace clapi::deduced::inline concepts
 
 /* Best read in VIM {{{
  * vim: noai : et : fdm=marker :

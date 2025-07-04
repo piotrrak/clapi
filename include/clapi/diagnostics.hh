@@ -2,6 +2,7 @@
 
 #include "clapi/etc/basic.hh"
 #include "clapi/etc/given.hh"
+#include "clapi/deduced/function_pointer.hh"
 
 #include <source_location>
 #include <print>
@@ -71,10 +72,8 @@ struct sloc_tracking<false>
   consteval operator bool() && noexcept { return ney{}; }
 };
 
-using clapi::nontype_function_pointer_type;
-
 template <typename FnTy_>
-  requires nontype_function_pointer_type<FnTy_>
+  requires deduced::nontype_function_pointer_type<FnTy_>
 consteval auto TODO_ugly_unportable_name__(FnTy_) noexcept {
   constexpr std::string_view full{
 #ifdef __clang__

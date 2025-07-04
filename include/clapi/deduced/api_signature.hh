@@ -1,9 +1,16 @@
 #pragma once
 
 #include "clapi/etc/seq.hh"
+#include "clapi/deduced/function_pointer.hh"
 
-namespace clapi::deduced::_detail
+namespace clapi::_detail::deduced
 {
+
+using clapi::deduced::function_pointer;
+using clapi::deduced::function_pointer_type;
+
+using clapi::deduced::plain_function_pointer;
+using clapi::deduced::plain_function_pointer_type;
 
 //----------------------------------------------------------------------------------------
 // {{{ trait _signature_query<> and auxiliaries - Main Work-Horse function type deduction
@@ -220,7 +227,7 @@ template <auto Fn_>
   requires function_pointer<Fn_>
 struct _last_param_of : _last_param_impl<Fn_> {};
 
-} // namespace clapi::deduced::_detail
+} // namespace clapi::_detail::deduced
 
 namespace clapi::deduced
 {
@@ -231,7 +238,7 @@ namespace clapi::deduced
 template <auto Fn_>
   requires function_pointer<Fn_>
            and /* TODO: for now */ plain_function_pointer<Fn_>
-using params_of = typename _detail::_params_of<Fn_>::type;
+using params_of = typename _detail::deduced::_params_of<Fn_>::type;
 
 //----------------------------------------------------------------------------------------
 // result_of - type of function literal return type (modeled after std::result_of)
@@ -279,7 +286,7 @@ endcode }}} */
 template <auto Fn_>
   requires function_pointer<Fn_>
            and /* TODO: for now */ plain_function_pointer<Fn_>
-using result_of = typename _detail::_result_of<Fn_>::type;
+using result_of = typename _detail::deduced::_result_of<Fn_>::type;
 
 //----------------------------------------------------------------------------------------
 // last_param_of - type of function literal last param (SFINAE-fail if the arity == 0)
@@ -287,7 +294,7 @@ using result_of = typename _detail::_result_of<Fn_>::type;
 template <auto Fn_>
   requires function_pointer<Fn_>
            and /* TODO: for now */ plain_function_pointer<Fn_>
-using last_param_of = typename _detail::_last_param_of<Fn_>::type;
+using last_param_of = typename _detail::deduced::_last_param_of<Fn_>::type;
 
 //----------------------------------------------------------------------------------------
 // param_count_of - function literal arity (number of function literal parameters)
@@ -296,7 +303,7 @@ template <auto Fn_>
   requires function_pointer<Fn_>
            and /* TODO: for now */ plain_function_pointer<Fn_>
 [[deprecated("use clapi::deduced::arity_of")]]
-constexpr inline auto param_count_of = _detail::_arity_of<Fn_>;
+constexpr inline auto param_count_of = _detail::deduced::_arity_of<Fn_>;
 
 //----------------------------------------------------------------------------------------
 // arity_of - function literal arity (number of function literal parameters)
@@ -304,7 +311,7 @@ constexpr inline auto param_count_of = _detail::_arity_of<Fn_>;
 template <auto Fn_>
   requires function_pointer<Fn_>
   and /* TODO: for now */ plain_function_pointer<Fn_>
-constexpr inline auto arity_of = _detail::_arity_of<Fn_>;
+constexpr inline auto arity_of = _detail::deduced::_arity_of<Fn_>;
 
 //----------------------------------------------------------------------------------------
 // noexcept_qual_of - noexcept qualifier of function literal [clapi::boolean]
@@ -316,7 +323,7 @@ template <auto Fn_>
 constexpr inline auto noexcept_qual_of = [] /*ASSERT()*/ consteval static -> clapi::aye
 {
 /* Always assumed to be true! {{{ */
-  static_assert(_detail::_noexcept_qual_of<Fn_> == true,
+  static_assert(_detail::deduced::_noexcept_qual_of<Fn_> == true,
                 "Should be assumed for C-functions,"
                 " regardless specified qualifier");
 

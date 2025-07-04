@@ -15,7 +15,7 @@ void dummy_cl_oret_nx(cl_int*) noexcept;
 
 void dummy_cl_not_oret_nx(cl_uint*) noexcept;
 
-using clapi::etc::can_deduce_with;
+using deduced::can_deduce_with;
 
 static_assert(can_deduce_with<deduced::result_of, dummy_cl>);
 static_assert(can_deduce_with<deduced::result_of, dummy_cl_nx>);

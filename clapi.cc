@@ -6,7 +6,7 @@ using clapi::etc::nontype_t, clapi::etc::nontype;
 using clapi::transforms::check_fn;
 
 template <auto Fn_>
-  requires clapi::plain_function_pointer<Fn_>
+  requires clapi::deduced::plain_function_pointer<Fn_>
            and clapi::deduced::core_api<nontype_t<Fn_>>
 constexpr inline auto check = check_fn(nontype<Fn_>);
 
@@ -16,7 +16,7 @@ constexpr inline auto check = check_fn(nontype<Fn_>);
 
 ``` c++
 template <auto Fn_>
-  requires clapi::plain_function_pointer<Fn_>
+  requires clapi::deduced::plain_function_pointer<Fn_>
            and clapi::deduced::core_api<nontype_t<Fn_>>
 [[nodiscard]]
 auto checked(auto &&...args) noexcept
