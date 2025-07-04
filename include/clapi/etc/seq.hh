@@ -16,6 +16,7 @@ namespace clapi::detail::inline sequences
 //        The `_sized_seq` base class doesn't provide the access to elements since
 //        seq-like types are bit heavier abstraction over the template parameter-packs of
 //        the both types and nontypes.
+//  }}}
 
 template <std::size_t Size_>
 struct _sized_seq
@@ -25,19 +26,21 @@ struct _sized_seq
 
   // the index range check - constainted to `unsigned_integral`
   template <typename IndexedTy_ = unsigned>
+  [[nodiscard]]
   static consteval auto in_range(unsigned_integral auto idx) noexcept -> bool
   {
     return std::in_range<IndexedTy_>(idx) && (idx < size());
   }
 
   template <typename IndexedTy_ = unsigned>
+  [[nodiscard]]
   static consteval auto in_range(signed_integral auto idx) noexcept -> bool
   {
     constexpr decltype(idx) Zero{0};
     if (idx < Zero)
-      return std::in_range<IndexedTy_>(size + idx) and (size() <= -idx);
+      return std::in_range<IndexedTy_>(size + idx) and (std::size_t(size()+idx) < size());
     else
-      return std::in_range<IndexedTy_>(idx) and (idx < size());
+      return std::in_range<IndexedTy_>(idx) and (std::size_t(idx) < size());
   }
 };
 
@@ -61,11 +64,7 @@ struct _sized_seq
 //----------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------------------
 
-template <typename Ty_>
-  requires requires {
-    {Ty_::size } -> convertible_to<std::size_t>;
-    {Ty_::size() } -> same_as<std::size_t>;
-  }
+template <basic_sized_sequence Ty_>
 constexpr std::size_t _size_v_impl = Ty_::size();
 
 //----------------------------------------------------------------------------------------
@@ -112,14 +111,6 @@ template <typename Ty_>
 concept _not_sized_seq =
   not _is_nontype1_specialization_of<std::size_t, Ty_, _sized_seq>;
 
-using std::add_cv_t;
-
-template <typename>
-consteval bool _chk_pinterconv_sized_seq_base(add_cv_t<void>*)
-{
-  return false;
-}
-
 template <typename Ty_,
           unsigned N_ = _size_v<Ty_>>
   requires _not_sized_seq<Ty_>
@@ -128,26 +119,10 @@ consteval bool _chk_pinterconv_sized_seq_base(add_cv_t<_sized_seq<N_>>*)
   return std::is_pointer_interconvertible_base_of_v<_sized_seq<N_>, Ty_>;
 }
 
-template <typename Ty_>
-concept _derived_from_sized_seq = _chk_pinterconv_sized_seq_base<Ty_>(nullptr_v<Ty_>);
+} // namespace clapi::detail::inline sequences
 
-}
 namespace clapi::inline sequences::inline concepts
 {
-
-//----------------------------------------------------------------------------------------
-//
-//----------------------------------------------------------------------------------------
-
-template <typename Ty_>
-constexpr bool opt_in_sized_sequence = false;
-
-//----------------------------------------------------------------------------------------
-//
-//----------------------------------------------------------------------------------------
-template <typename Ty_>
-concept sized_sequence = opt_in_sized_sequence<Ty_>
-  or detail::_derived_from_sized_seq<Ty_>;
 
 } // namespace clapi::inline sequences inline concepts
 
@@ -167,14 +142,14 @@ namespace clapi::inline sequences
 // tseq<> - specialization of empty `tseq<>`
 //----------------------------------------------------------------------------------------
 template <>
-struct tseq<> : detail::_sized_seq<0> {};
+struct tseq<> : _detail::_sized_seq<0> {};
 
 //----------------------------------------------------------------------------------------
 // vseq<> - specialization of empty `vseq<>`
 //----------------------------------------------------------------------------------------
 
 template <>
-struct vseq<> : detail::_sized_seq<0> {};
+struct vseq<> : _detail::_sized_seq<0> {};
 
 // We'll use pack indexing, clang/g++ would warn.
 // While it's doable without since c++, but just harder and slower to compile.
@@ -187,7 +162,7 @@ _clapi_BEGIN_ALLOW_CPP26()
 //----------------------------------------------------------------------------------------
 
 template <typename... Types_>
-struct tseq : detail::_sized_seq<sizeof...(Types_)>
+struct tseq : _detail::_sized_seq<sizeof...(Types_)>
 {
   template <unsigned Idx_>
     requires (tseq::in_range(Idx_))
@@ -333,6 +308,29 @@ static_assert(not _derived_from_sized_seq<_sized_seq<0>>);
 static_assert(_derived_from_sized_seq<tseq<>>);
 static_assert(_derived_from_sized_seq<vseq<>>);
 static_assert(not _derived_from_sized_seq<iseq<>>);
+
+static_assert(basic_sized_sequence<tseq<int>>);
+static_assert(basic_non_empty_sequence<tseq<int>>);
+static_assert(basic_indexable_sequence<tseq<int>>);
+static_assert(basic_rev_indexable_sequence<tseq<int>>);
+
+static_assert(basic_sized_sequence<tseq<int, short>>);
+static_assert(basic_non_empty_sequence<tseq<int, short>>);
+static_assert(basic_indexable_sequence<tseq<int, short>>);
+static_assert(basic_rev_indexable_sequence<tseq<int, short>>);
+
+static_assert(not basic_non_empty_sequence<tseq<>>);
+static_assert(not basic_indexable_sequence<tseq<>>);
+static_assert(not basic_rev_indexable_sequence<tseq<>>);
+
+constexpr bool _compiles1 = basic_indexable_sequence<tseq<>>;
+constexpr bool _compiles2 = basic_rev_indexable_sequence<tseq<>>;
+constexpr bool _compiles3 = basic_indexable_sequence<iseq<>>;
+constexpr bool _compiles4 = basic_rev_indexable_sequence<iseq<>>;
+constexpr bool _compiles5 = basic_indexable_sequence<tseq<int>>;
+constexpr bool _compiles6 = basic_rev_indexable_sequence<tseq<int>>;
+//constexpr bool _compiles6 = basic_rev_indexable_sequence<tseq<int>>;
+
 
 }
 // }}}

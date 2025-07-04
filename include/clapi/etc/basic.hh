@@ -4,9 +4,6 @@
 
 #include "clapi/etc/type_constants.hh"
 
-#include <concepts>
-#include <type_traits>
-
 namespace clapi::inline etc
 {
 
@@ -47,27 +44,6 @@ constexpr itstype_t<Ty_> itstype{};
 
 template <int>
 struct empty {};
-
-template <typename Type_>
-using unc = std::remove_const_t<Type_>;
-
-template <typename Type_>
-using unv = std::remove_volatile_t<Type_>;
-
-template <typename Type_>
-using uncv = std::remove_cv_t<Type_>;
-
-template <typename Type_>
-using unptr = std::remove_pointer_t<Type_>;
-
-template <typename Type_>
-using unref = std::remove_reference_t<Type_>;
-
-template <typename Type_>
-using uncvref = std::remove_reference_t<Type_>;
-
-template <typename Ty_>
-constexpr Ty_* nullptr_v = nullptr;
 
 } // namespace clapi::inline etc
 
@@ -151,13 +127,6 @@ constexpr inline auto _is_function_ptr_type<nontype_t<Value_>> =
 namespace clapi::inline etc::inline concepts
 {
 
-using std::integral, std::signed_integral, std::unsigned_integral;
-
-using std::same_as, std::convertible_to;
-
-template <typename Ty1_, typename Ty2_>
-concept different_from = not same_as<uncvref<Ty1_>, uncvref<Ty1_>>;
-
 // function_pointer_type
 //
 // true iff type Ty_ is function pointer or nontype_t of thereof.
@@ -191,16 +160,6 @@ template <auto Value_>
 concept nontype_function_pointer = function_pointer<Value_>
   and not plain_function_pointer<Value_>;
 
-template <typename Ty_>
-concept qualified = different_from<uncvref<Ty_>, Ty_>;
-
-template <typename Ty_>
-concept unqualified = same_as<uncvref<Ty_>, Ty_>;
-
-template <typename Ty_>
-concept mutable_type = same_as<unc<Ty_>, Ty_>
-  and not std::is_function_v<Ty_>;
-
 } // namespace clapi::inline etc::inline concepts
 
 namespace clapi::inline etc
@@ -223,12 +182,6 @@ public:
 };
 
 } // namespace clapi::inline etc
-
-// Prepare for clapi::detail rename to clapi::_detail
-namespace clapi
-{
-namespace _detail = detail;
-}
 
 /* Best read in VIM {{{
  * vim: noai : et : fdm=marker :

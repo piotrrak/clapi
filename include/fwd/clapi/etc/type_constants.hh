@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <type_traits>
 #include <utility>
 
 namespace clapi::inline type_constants
@@ -17,6 +18,9 @@ using boolean = constant<V_>;
 template <std::size_t V_>
 using size = constant<V_>;
 
+template <std::make_signed_t<std::size_t> V_>
+using ssize = constant<V_>;
+
 template <auto V_>
 inline constexpr auto constant_ = constant<V_>{};
 
@@ -24,7 +28,10 @@ template <bool V_>
 inline constexpr auto boolean_ = boolean<V_>{};
 
 template <std::size_t V_>
-constexpr inline auto size_ = size<V_>{};
+inline constexpr auto size_ = size<V_>{};
+
+template <std::make_signed_t<std::size_t> V_>
+inline constexpr auto ssize_ = ssize<V_>{};
 
 using ney = boolean<false>; // Note: it is an alias of std::false_type
 using aye = boolean<true>;  // Note: it is an alias of std::true_type

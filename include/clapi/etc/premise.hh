@@ -164,8 +164,6 @@ namespace belived
 
 }
 
-consteval auto as_constexpr(auto c) noexcept { return c; }
-
 consteval auto contradicting(auto j) noexcept
   requires requires (decltype(j) c) {
     { as_constexpr(c).contradiction() } -> pretence_type;
